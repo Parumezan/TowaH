@@ -1,0 +1,21 @@
+### Unity ###
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+
+# Assets
+!/[Aa]ssets/**/*.meta
+
+# Build
+/[Bb]uild/
+
+### IDE ###
+.vs
+.vscode
+.idea
+*.csproj
+*.sln
+
+### Project ###
