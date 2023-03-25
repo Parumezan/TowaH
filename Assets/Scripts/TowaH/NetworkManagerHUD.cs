@@ -9,32 +9,31 @@ namespace TowaH {
         
         [Header("GUI")]
         [SerializeField] private int offsetX = 10;
-        [SerializeField] private int offsetY = 40;
-        
+        [SerializeField] private int offsetY = 10;
+
         private void Awake() {
             manager = GetComponent<TowaHNetworkManager>();
         }
-    
+
         void OnGUI() {
-            if (!manager.isNetworkActive) {
+            if (manager.state == NetworkState.Offline) {
                 DrawGUI();
             }
         }
 
         void DrawGUI() {
             GUILayout.BeginArea(new Rect(10 + offsetX, 40 + offsetY, 215, 300));
-
-            GUILayout.BeginHorizontal();
             
-            string ip = GUILayout.TextField("127.0.0.1");
-            short port = short.Parse(GUILayout.TextField("25565"));
+            string address = GUILayout.TextField("localhost");
 
-            GUILayout.EndHorizontal();
-
-            if (GUILayout.Button("Connect")) {
-                manager.ConnectToServer(ip, port);
+            if (GUILayout.Button("Connect to party")) {
+                manager.ConnectToParty(address);
             }
-
+            
+            if (GUILayout.Button("Host party")) {
+                manager.CreateParty();
+            }
+            
             GUILayout.EndArea();
         }
     }

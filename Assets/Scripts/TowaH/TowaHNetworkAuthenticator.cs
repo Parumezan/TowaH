@@ -17,12 +17,16 @@ namespace TowaH {
         }
 
         public override void OnClientAuthenticate() {
+            Debug.Log("OnClientAuthenticate");
+            
             // Set state
             manager.state = NetworkState.Handshake;
         }
         
         void OnClientLoginSuccess(LoginSuccessMsg msg) {
-            // Wait for LoginMsg from client
+            Debug.Log("OnClientLoginSuccess");
+            // Authenticated successfully. OnClientConnected will be called.
+            OnClientAuthenticated.Invoke();
         }
         
         #endregion
@@ -34,6 +38,8 @@ namespace TowaH {
         }
 
         public override void OnServerAuthenticate(NetworkConnectionToClient conn) {
+            Debug.Log("OnServerAuthenticate");
+            // Wait for LoginMsg from client
         }
 
         bool PlayerLoggedIn(string playerId) {
@@ -41,6 +47,8 @@ namespace TowaH {
         }
 
         void OnServerLogin(NetworkConnectionToClient conn, LoginMsg msg) {
+            Debug.Log("OnServerLogin");
+            
             // Correct version?
             if (msg.version != Application.version) {
                 manager.ServerSendError(conn, "outdated version", true);

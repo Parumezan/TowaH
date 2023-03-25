@@ -357,6 +357,7 @@ GameObject:
   - component: {fileID: 1845330356}
   - component: {fileID: 1845330358}
   - component: {fileID: 1845330359}
+  - component: {fileID: 1845330360}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -386,12 +387,38 @@ MonoBehaviour:
   transport: {fileID: 1845330358}
   networkAddress: localhost
   maxConnections: 100
-  authenticator: {fileID: 0}
+  authenticator: {fileID: 1845330360}
   playerPrefab: {fileID: 0}
   autoCreatePlayer: 1
   playerSpawnMethod: 0
   spawnPrefabs: []
   timeInterpolationGui: 0
+  onStartClient:
+    m_PersistentCalls:
+      m_Calls: []
+  onStopClient:
+    m_PersistentCalls:
+      m_Calls: []
+  onStartServer:
+    m_PersistentCalls:
+      m_Calls: []
+  onStopServer:
+    m_PersistentCalls:
+      m_Calls: []
+  onClientConnect:
+    m_PersistentCalls:
+      m_Calls: []
+  onClientDisconnect:
+    m_PersistentCalls:
+      m_Calls: []
+  onServerConnect:
+    m_PersistentCalls:
+      m_Calls: []
+  onServerDisconnect:
+    m_PersistentCalls:
+      m_Calls: []
+  playerUsernameMaxLength: 16
+  state: 0
 --- !u!4 &1845330357
 Transform:
   m_ObjectHideFlags: 0
@@ -445,3 +472,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   offsetX: 10
   offsetY: 10
+--- !u!114 &1845330360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1845330355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a829acf2d3e0842bee118c45c2b390, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnServerAuthenticated:
+    m_PersistentCalls:
+      m_Calls: []
+  OnClientAuthenticated:
+    m_PersistentCalls:
+      m_Calls: []

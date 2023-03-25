@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Mirror;
 using UnityEngine;
 using UnityEngine.Events;
@@ -20,35 +21,58 @@ namespace TowaH {
         public UnityEventNetworkConnection onServerConnect;
         public UnityEventNetworkConnection onServerDisconnect;
         
+        [SerializeField] private int playerUsernameMaxLength = 16;
+        
         #region Client
         
         // Current network manager state on client
         public NetworkState state = NetworkState.Offline;
 
         public override void OnStartClient() {
+            Debug.Log("OnStartClient");
+            
             // Setup handlers
             NetworkClient.RegisterHandler<ErrorMsg>(OnClientError, false);
+            NetworkClient.RegisterHandler<CharactersAvailableMsg>(OnClientCharactersAvailable);
             
             onStartClient?.Invoke();
         }
         
         public override void OnStopClient() {
+            Debug.Log("OnStopClient");
             onStopClient?.Invoke();
         }
         
         public override void OnClientConnect() {
+            Debug.Log("OnClientConnect");
             onClientConnect?.Invoke(NetworkClient.connection);
         }
 
         public override void OnClientDisconnect() {
+            Debug.Log("OnClientDisconnect");
             onClientDisconnect?.Invoke(NetworkClient.connection);
+        }
+        
+        public void ConnectToParty(string address) {
+            Debug.Log($"Connecting to party at {address}");
+            
+            // Set address to mirror's network manager
+            networkAddress = address;
+
+            StartClient();
+        }
+
+        public void CreateParty() {
+            Debug.Log("Creating party");
+            
+            StartHost();
         }
 
         void OnClientError(ErrorMsg message) {
             Debug.Log($"Client error: {message.text}");
-            
+
             // TODO: Show error message in UI
-            
+
             // Disconnect if it was an important network error
             // (this is needed because the login failure message doesn't disconnect
             // the client immediately (only after timeout))
@@ -64,34 +88,90 @@ namespace TowaH {
             }
         }
 
-        public void ConnectToServer(string ip, short port) {
-            Debug.Log($"Connecting to {ip}:{port}");
+        void OnClientCharactersAvailable(CharactersAvailableMsg msg) {
+            Debug.Log("OnClientCharactersAvailable");
+            // TODO: Show character selection UI
         }
-        
+
         #endregion
         
         #region Server
         
         public Dictionary<NetworkConnection, string> lobby = new Dictionary<NetworkConnection, string>();
+        public Dictionary<string, PlayerInfo> players = new Dictionary<string, PlayerInfo>();
 
         public override void OnStartServer() {
+            Debug.Log("OnStartServer");
+            
+            // Setup handlers
+            NetworkServer.RegisterHandler<EditPlayerUsernameMsg>(OnServerEditPlayerUsername);
+            NetworkServer.RegisterHandler<SelectPlayerCharacterMsg>(OnServerSelectPlayerCharacter);
+            NetworkServer.RegisterHandler<PlayerReadyMsg>(OnServerPlayerReady);
+            
             onStartServer?.Invoke();
         }
 
         public override void OnStopServer() {
+            Debug.Log("OnStopServer");
             onStopServer?.Invoke();
         }
 
+        // Called on the server if a client connects after successful auth
         public override void OnServerConnect(NetworkConnectionToClient conn) {
+            Debug.Log("OnServerConnect");
+            
+            string playerId = lobby[conn];
+            
+            players[playerId] = new PlayerInfo {
+                // TODO: Set player info
+            };
+            
+            // TODO: Send character list
+            
             onServerConnect?.Invoke(conn);
         }
 
         public override void OnServerDisconnect(NetworkConnectionToClient conn) {
-            onServerDisconnect?.Invoke(conn);
+            Debug.Log("OnServerDisconnect");
+            
+            StartCoroutine(DoServerDisconnect(conn, 0.0f));
+        }
+        
+        IEnumerator<WaitForSeconds> DoServerDisconnect(NetworkConnectionToClient conn, float delay) {
+            yield return new WaitForSeconds(delay);
+            
+            onServerDisconnect.Invoke(conn);
+            
+            string playerId = lobby[conn];
+            players.Remove(playerId);
+            lobby.Remove(conn);
+            
+            base.OnServerDisconnect(conn);
         }
 
         public void ServerSendError(NetworkConnection conn, string error, bool disconnect) {
             conn.Send(new ErrorMsg{text=error, causesDisconnect=disconnect});
+        }
+        
+        public bool IsAllowedUsername(string username) {
+            // Not too long?
+            // Only contains letters, number and underscore and not empty (+)?
+            return username.Length <= playerUsernameMaxLength && Regex.IsMatch(username, @"^[a-zA-Z0-9_]+$");
+        }
+        
+        void OnServerEditPlayerUsername(NetworkConnectionToClient conn, EditPlayerUsernameMsg msg) {
+            Debug.Log("OnServerEditPlayerUsername");
+            // TODO: Implement
+        }
+        
+        void OnServerSelectPlayerCharacter(NetworkConnectionToClient conn, SelectPlayerCharacterMsg msg) {
+            Debug.Log("OnServerSelectPlayerCharacter");
+            // TODO: Implement
+        }
+        
+        void OnServerPlayerReady(NetworkConnectionToClient conn, PlayerReadyMsg msg) {
+            Debug.Log("OnServerPlayerReady");
+            // TODO: Implement
         }
 
         #endregion
