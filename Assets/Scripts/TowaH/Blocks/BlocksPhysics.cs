@@ -1,75 +1,48 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BlocksPhysics : MonoBehaviour
 {
-    Rigidbody2D rb;
-    private float speed = 0;
-    private float falling_speed = 0;
-    public bool falling;
-    public BlocksManager bn;
+    private Rigidbody2D _rb;
+    private float _speed = 5f;
+    private float _falling_speed = 4f;
+    private bool _falling = true;
+    private BlocksManager _bn;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        falling = false;
-        bn = GameObject.Find("GameMaster").GetComponent<BlocksManager>();
-        speed = 5;
-        falling_speed = 4f;
-        rb = gameObject.GetComponent<Rigidbody2D>();
-        if (rb == null)
-            Debug.Log("mlkjsd");
-        rb.bodyType = RigidbodyType2D.Static;
+    private void Awake() {
+        _bn = GameObject.Find("GameMaster").GetComponent<BlocksManager>();
+        _rb = gameObject.GetComponent<Rigidbody2D>();
     }
-
-    // Update is called once per frame
-    void Update()
+    
+    private void Update()
     {
-        if (gameObject.transform.position.x < -2)
-            gameObject.transform.position = new Vector2(-2, transform.position.y);
-        if (gameObject.transform.position.x > 2)
-            gameObject.transform.position = new Vector2(2, transform.position.y);
-        if (falling) {
+        if (transform.position.y < -10)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        if (_falling) {
+            if (gameObject.transform.position.x < -2)
+                gameObject.transform.position = new Vector2(-2, transform.position.y);
+            if (gameObject.transform.position.x > 2)
+                gameObject.transform.position = new Vector2(2, transform.position.y);
             float x = Input.GetAxis("Horizontal");
             if (Input.GetAxis("Vertical") < 0)
-                rb.velocity = new Vector2(x * speed, -falling_speed * 2);
+                _rb.velocity = new Vector2(x * _speed, -_falling_speed * 2);
             else
-                rb.velocity = new Vector2(x * speed, -falling_speed);
+                _rb.velocity = new Vector2(x * _speed, -_falling_speed);
         }
     }
-
-    public void LaunchBlock()
-    {
-        gameObject.transform.position = new Vector2(0, 8);
-        falling = true;
-        rb.gravityScale = 0;
-        rb.bodyType = RigidbodyType2D.Dynamic;
+    
+    private void StopFalling() {
+        _falling = false;
+        _rb.gravityScale = 1; 
     }
 
-    void StopFalling()
-    {
-        falling = false;
-        rb = gameObject.GetComponent<Rigidbody2D>();
-        rb.gravityScale = 1; 
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (falling == true)
-        {
-            StopFalling();
-            bn.SpawnRandomObject();
-        }
-    }
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("death"))
-        {
-            StopFalling();
-            bn.SpawnRandomObject();
-            Debug.Log("azer");
-            Destroy(gameObject);
-        }
+    //TODO: remove spawn, spawn it in server
+    private void OnCollisionEnter2D(Collision2D collision) {
+        if (!_falling) 
+            return;
+        StopFalling();
+        _bn.SpawnRandomObject();
     }
 }
