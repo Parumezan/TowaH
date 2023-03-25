@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 363980262272273679}
   - component: {fileID: 1490538232981711337}
   - component: {fileID: 3789947329451902277}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: OutBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -146,7 +146,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3174918726029153354}
   - component: {fileID: 3174918726029153357}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FirstBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -230,7 +230,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2699046818222817460}
   - component: {fileID: 1651657061940930302}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: ThirdBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -314,7 +314,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7735009345982297970}
   - component: {fileID: 2043033322012881423}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: SecondBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -400,7 +400,7 @@ GameObject:
   - component: {fileID: 7954816354407956816}
   - component: {fileID: 2084731276215537053}
   - component: {fileID: -7319080213074356663}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FormL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -516,3 +516,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b55b8b7a0f2baa4e81fea03fb1cb96b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  falling: 0
+  bn: {fileID: 0}

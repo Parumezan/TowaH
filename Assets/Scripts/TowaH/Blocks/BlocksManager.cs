@@ -16,7 +16,6 @@ public class BlocksManager : MonoBehaviour
 
             blocks.Add(lo);
         }
-
         SpawnRandomObject();
         SpawnRandomObject();
     }
@@ -30,15 +29,10 @@ public class BlocksManager : MonoBehaviour
 
     public void SpawnRandomObject()
     {
-        //spawns item in array position between 0 and 100
-
-        int whichItem = Random.Range(0, 3);
-        if (nextBlock != null) {
-            nextBlock.transform.position = new Vector2(0, 10);
-            nextBlock.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
-        }
+        int whichItem = Random.Range(0, 5);
+        if (nextBlock != null)
+            nextBlock.GetComponent<BlocksPhysics>().LaunchBlock();
         nextBlock = Instantiate(blocks[whichItem]) as GameObject;
-        nextBlock.GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
         nextBlock.transform.position = gameObject.transform.position;
     }
 }

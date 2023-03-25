@@ -10,8 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5811853701482517152}
   - component: {fileID: 4685345157243663942}
-  - component: {fileID: 4114594859557806631}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: BottomBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -85,51 +84,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &4114594859557806631
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4779944057702161391}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -1.5}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1, y: 4}
-  m_EdgeRadius: 0
 --- !u!1 &7239805732823556052
 GameObject:
   m_ObjectHideFlags: 0
@@ -140,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8132996248757624603}
   - component: {fileID: 4846182575432579409}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: RightBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -226,7 +180,7 @@ GameObject:
   - component: {fileID: 4309922215080353535}
   - component: {fileID: 5831192061257800045}
   - component: {fileID: -1398435571547092409}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FormZ
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -344,6 +298,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b55b8b7a0f2baa4e81fea03fb1cb96b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  falling: 0
+  bn: {fileID: 0}
 --- !u!1 &8066214902807341805
 GameObject:
   m_ObjectHideFlags: 0
@@ -354,7 +310,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4535830969713715421}
   - component: {fileID: 5327912032039906720}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: LeftBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -438,7 +394,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8765508981422394341}
   - component: {fileID: 8765508981422394338}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: MiddleBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
