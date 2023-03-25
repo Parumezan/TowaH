@@ -33,7 +33,31 @@ namespace TowaH.UI {
         }
 
         public void OnReadyButton() {
-            Debug.Log("OnReadyButton");
+            NetworkClient.Send(new PlayerReadyMsg());
+        }
+
+        public void OnJoinPlayer(int index) {
+            characterSelectors[index].gameObject.SetActive(true);
+        }
+        
+        public void OnLeavePlayer(int index) {
+            characterSelectors[index].gameObject.SetActive(false);
+        }
+        
+        public void OnPlayerCharacterSelected(int index, int characterIndex) {
+            characterSelectors[index].SelectCharacter(characterIndex);
+        }
+        
+        public void OnPlayerCharacterAuthority(int index) {
+            characterSelectors[index].SetAuthority();
+            
+            characterSelectors[index].onCharacterSelected.RemoveAllListeners();
+            characterSelectors[index].onCharacterSelected.AddListener(characterIndex => {
+                NetworkClient.Send(new SelectPlayerCharacterMsg {
+                    playerId = index,
+                    characterIndex = characterIndex
+                });
+            });
         }
     }
 }
