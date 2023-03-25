@@ -15,13 +15,13 @@ namespace TowaH {
             manager = GetComponent<TowaHNetworkManager>();
         }
 
-        void OnGUI() {
+        private void OnGUI() {
             if (manager.state == NetworkState.Offline) {
                 DrawGUI();
             }
         }
 
-        void DrawGUI() {
+        private void DrawGUI() {
             GUILayout.BeginArea(new Rect(10 + offsetX, 40 + offsetY, 215, 300));
             
             string address = GUILayout.TextField("localhost");

@@ -77,7 +77,7 @@ namespace TowaH {
             StartHost();
         }
 
-        void OnClientError(ErrorMsg message) {
+        private void OnClientError(ErrorMsg message) {
             Debug.Log($"Client error: {message.text}");
 
             // TODO: Show error message in UI
@@ -97,7 +97,7 @@ namespace TowaH {
             }
         }
 
-        void OnClientCharactersAvailable(CharactersAvailableMsg msg) {
+        private void OnClientCharactersAvailable(CharactersAvailableMsg msg) {
             Debug.Log("OnClientCharactersAvailable");
             
             // Set state
@@ -162,7 +162,7 @@ namespace TowaH {
             StartCoroutine(DoServerDisconnect(conn, 0.0f));
         }
         
-        IEnumerator<WaitForSeconds> DoServerDisconnect(NetworkConnectionToClient conn, float delay) {
+        private IEnumerator<WaitForSeconds> DoServerDisconnect(NetworkConnectionToClient conn, float delay) {
             yield return new WaitForSeconds(delay);
             
             onServerDisconnect.Invoke(conn);
@@ -184,7 +184,7 @@ namespace TowaH {
             return username.Length <= playerUsernameMaxLength && Regex.IsMatch(username, @"^[a-zA-Z0-9_]+$");
         }
         
-        void OnServerEditPlayerUsername(NetworkConnectionToClient conn, EditPlayerUsernameMsg msg) {
+        private void OnServerEditPlayerUsername(NetworkConnectionToClient conn, EditPlayerUsernameMsg msg) {
             Debug.Log("OnServerEditPlayerUsername");
 
             if (!lobby.ContainsKey(conn)) {
@@ -206,8 +206,8 @@ namespace TowaH {
             // Set username
             playerInfo.username = msg.username;
         }
-        
-        void OnServerSelectPlayerCharacter(NetworkConnectionToClient conn, SelectPlayerCharacterMsg msg) {
+
+        private void OnServerSelectPlayerCharacter(NetworkConnectionToClient conn, SelectPlayerCharacterMsg msg) {
             Debug.Log("OnServerSelectPlayerCharacter");
             
             if (!lobby.ContainsKey(conn)) {
@@ -219,7 +219,7 @@ namespace TowaH {
             // TODO: Implement
         }
         
-        void OnServerPlayerReady(NetworkConnectionToClient conn, PlayerReadyMsg msg) {
+        private void OnServerPlayerReady(NetworkConnectionToClient conn, PlayerReadyMsg msg) {
             Debug.Log("OnServerPlayerReady");
             
             if (!lobby.ContainsKey(conn)) {
