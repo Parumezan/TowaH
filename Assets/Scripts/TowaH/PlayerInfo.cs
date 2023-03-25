@@ -1,6 +1,7 @@
 namespace TowaH {
     public class PlayerInfo {
-        public string id;
-        public string username;
+        public string uniqueId;
+        public int id;
+        public int selectedCharacterIndex;
     }
 }

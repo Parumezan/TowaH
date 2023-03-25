@@ -11,7 +11,12 @@ namespace TowaH {
     public partial struct LoginSuccessMsg : NetworkMessage {
     }
     
-    public partial struct CharactersAvailableMsg : NetworkMessage {
+    public partial struct PlayerUpdateCharactersMsg : NetworkMessage {
+        public partial struct CharacterPreview {
+            public int playerId;
+            public int characterIndex;
+        }
+        public CharacterPreview[] characters;
     }
     
     #endregion

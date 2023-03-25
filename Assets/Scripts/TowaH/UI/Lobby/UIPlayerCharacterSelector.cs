@@ -26,17 +26,13 @@ namespace TowaH.UI.Lobby {
             
             rightSelectorButton.onClick.RemoveAllListeners();
             rightSelectorButton.onClick.AddListener(OnRightSelectorButtonClicked);
-            
-            // Set default character
-            // select first character
-            SelectCharacter(0);
-            
-            SetAuthority();
         }
         
         public void SetAuthority() {
             leftSelectorButton.gameObject.SetActive(true);
             rightSelectorButton.gameObject.SetActive(true);
+            leftSelectorButton.interactable = true;
+            rightSelectorButton.interactable = true;
         }
         
         public void SelectCharacter(int index) {

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using Mirror;
 using TowaH.UI;
 using UnityEngine;
@@ -16,6 +15,7 @@ namespace TowaH {
         [SerializeField] private TowaHGameManager gameManager;
         
         [SerializeField] private UIPopup uiPopup;
+        [SerializeField] private UILobby uiLobby;
         
         [Header("Events")]
         public UnityEvent onStartClient;
@@ -34,6 +34,7 @@ namespace TowaH {
             
             Debug.Assert(gameManager != null, "Game manager is null");
             Debug.Assert(uiPopup != null, "UI Popup is null");
+            Debug.Assert(uiLobby != null, "UI Lobby is null");
         }
         
         #region Client
@@ -46,7 +47,7 @@ namespace TowaH {
             
             // Setup handlers
             NetworkClient.RegisterHandler<ErrorMsg>(OnClientError, false);
-            NetworkClient.RegisterHandler<CharactersAvailableMsg>(OnClientCharactersAvailable);
+            NetworkClient.RegisterHandler<PlayerUpdateCharactersMsg>(OnClientPlayerUpdateCharacters);
             
             onStartClient?.Invoke();
         }
@@ -106,18 +107,18 @@ namespace TowaH {
             }
         }
 
-        private void OnClientCharactersAvailable(CharactersAvailableMsg msg) {
-            Debug.Log("OnClientCharactersAvailable");
+        private void OnClientPlayerUpdateCharacters(PlayerUpdateCharactersMsg msg) {
+            Debug.Log("OnClientPlayerUpdateCharacters");
             
             // Set state
             state = NetworkState.Lobby;
-            
-            // TODO: Show character selection UI
         }
 
         #endregion
         
         #region Server
+        
+        public NetworkState serverState = NetworkState.Offline;
         
         public Dictionary<NetworkConnection, string> lobby = new Dictionary<NetworkConnection, string>();
         public Dictionary<string, PlayerInfo> players = new Dictionary<string, PlayerInfo>();
@@ -147,21 +148,43 @@ namespace TowaH {
                 return;
             }
             
+            if (serverState == NetworkState.Game) {
+                ServerSendError(conn, "party is already started", true);
+                return;
+            }
+            
             string playerId = lobby[conn];
             
             // Create player info
             var playerInfo = new PlayerInfo {
-                id = playerId,
-                username = "Player " + lobby.Count
+                uniqueId = playerId,
+                id = lobby.Count,
+                selectedCharacterIndex = 0
             };
             players[playerId] = playerInfo;
             
-            var msg = new CharactersAvailableMsg {
-                // TODO: Set characters available
-            };
-            conn.Send(msg);
+            conn.Send(MakePlayerUpdateCharacters());
             
             onServerConnect?.Invoke(conn);
+        }
+        
+        // TODO: Rework this
+        private PlayerUpdateCharactersMsg MakePlayerUpdateCharacters() {
+            var playerToUpdateCharacters = new PlayerUpdateCharactersMsg.CharacterPreview[players.Count];
+            
+            int i = 0;
+            foreach (PlayerInfo player in players.Values) {
+                var preview = new PlayerUpdateCharactersMsg.CharacterPreview {
+                    playerId = player.id,
+                    characterIndex = player.selectedCharacterIndex
+                };
+                playerToUpdateCharacters[i] = preview;
+                ++i;
+            }
+            
+            return new PlayerUpdateCharactersMsg {
+                characters = playerToUpdateCharacters
+            };
         }
 
         public override void OnServerDisconnect(NetworkConnectionToClient conn) {
@@ -179,17 +202,14 @@ namespace TowaH {
             players.Remove(playerId);
             lobby.Remove(conn);
             
+            // Update all clients
+            conn.Send(MakePlayerUpdateCharacters());
+            
             base.OnServerDisconnect(conn);
         }
 
         public void ServerSendError(NetworkConnection conn, string error, bool disconnect) {
             conn.Send(new ErrorMsg{text=error, causesDisconnect=disconnect});
-        }
-        
-        public bool IsAllowedUsername(string username) {
-            // Not too long?
-            // Only contains letters, number and underscore and not empty (+)?
-            return username.Length <= playerUsernameMaxLength && Regex.IsMatch(username, @"^[a-zA-Z0-9_]+$");
         }
 
         private void OnServerSelectPlayerCharacter(NetworkConnectionToClient conn, SelectPlayerCharacterMsg msg) {
