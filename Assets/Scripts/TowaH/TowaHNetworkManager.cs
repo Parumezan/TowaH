@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Mirror;
+using TowaH.UI;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -13,6 +14,8 @@ namespace TowaH {
     public class TowaHNetworkManager : NetworkManager {
         [Header("Game Manager")]
         [SerializeField] private TowaHGameManager gameManager;
+        
+        [SerializeField] private UIPopup uiPopup;
         
         [Header("Events")]
         public UnityEvent onStartClient;
@@ -30,6 +33,7 @@ namespace TowaH {
             base.Awake();
             
             Debug.Assert(gameManager != null, "Game manager is null");
+            Debug.Assert(uiPopup != null, "UI Popup is null");
         }
         
         #region Client
@@ -46,16 +50,16 @@ namespace TowaH {
             
             onStartClient?.Invoke();
         }
-        
+
         public override void OnStopClient() {
             Debug.Log("OnStopClient");
-            
+
             // Set state
             state = NetworkState.Offline;
-            
+
             onStopClient?.Invoke();
         }
-        
+
         public override void OnClientConnect() {
             Debug.Log("OnClientConnect");
             onClientConnect?.Invoke(NetworkClient.connection);
@@ -65,7 +69,7 @@ namespace TowaH {
             Debug.Log("OnClientDisconnect");
             onClientDisconnect?.Invoke(NetworkClient.connection);
         }
-        
+
         public void ConnectToParty(string address) {
             Debug.Log($"Connecting to party at {address}");
             
@@ -83,8 +87,9 @@ namespace TowaH {
 
         private void OnClientError(ErrorMsg message) {
             Debug.Log($"Client error: {message.text}");
-
-            // TODO: Show error message in UI
+            
+            // Show error message
+            uiPopup.Show(message.text);
 
             // Disconnect if it was an important network error
             // (this is needed because the login failure message doesn't disconnect
