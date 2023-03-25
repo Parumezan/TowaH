@@ -133,6 +133,12 @@ namespace TowaH {
         public override void OnServerConnect(NetworkConnectionToClient conn) {
             Debug.Log("OnServerConnect");
             
+            // Check if party is full (maxConnections)
+            if (lobby.Count >= maxConnections) {
+                ServerSendError(conn, "party is full", true);
+                return;
+            }
+            
             string playerId = lobby[conn];
             
             // Create player info
