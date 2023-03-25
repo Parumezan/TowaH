@@ -393,6 +393,7 @@ MonoBehaviour:
   playerSpawnMethod: 0
   spawnPrefabs: []
   timeInterpolationGui: 0
+  gameManager: {fileID: 1367509456}
   onStartClient:
     m_PersistentCalls:
       m_Calls: []

@@ -11,6 +11,9 @@ namespace TowaH {
     [Serializable] public class UnityEventNetworkConnection : UnityEvent<NetworkConnection> {}
     
     public class TowaHNetworkManager : NetworkManager {
+        [Header("Game Manager")]
+        [SerializeField] private TowaHGameManager gameManager;
+        
         [Header("Events")]
         public UnityEvent onStartClient;
         public UnityEvent onStopClient;
@@ -22,6 +25,12 @@ namespace TowaH {
         public UnityEventNetworkConnection onServerDisconnect;
         
         [SerializeField] private int playerUsernameMaxLength = 16;
+
+        public override void Awake() {
+            base.Awake();
+            
+            Debug.Assert(gameManager != null, "Game manager is null");
+        }
         
         #region Client
         
@@ -81,7 +90,7 @@ namespace TowaH {
 
                 // also stop the host if running as host
                 // (host shouldn't start server but disconnect client for invalid
-                //  login, which would be pointless)
+                // login, which would be pointless)
                 if (NetworkServer.active) {
                     StopHost();
                 }
@@ -90,6 +99,10 @@ namespace TowaH {
 
         void OnClientCharactersAvailable(CharactersAvailableMsg msg) {
             Debug.Log("OnClientCharactersAvailable");
+            
+            // Set state
+            state = NetworkState.Lobby;
+            
             // TODO: Show character selection UI
         }
 
@@ -122,11 +135,17 @@ namespace TowaH {
             
             string playerId = lobby[conn];
             
-            players[playerId] = new PlayerInfo {
-                // TODO: Set player info
+            // Create player info
+            var playerInfo = new PlayerInfo {
+                id = playerId,
+                username = "Player " + players.Count
             };
+            players[playerId] = playerInfo;
             
-            // TODO: Send character list
+            var msg = new CharactersAvailableMsg {
+                // TODO: Set characters available
+            };
+            conn.Send(msg);
             
             onServerConnect?.Invoke(conn);
         }
@@ -161,16 +180,54 @@ namespace TowaH {
         
         void OnServerEditPlayerUsername(NetworkConnectionToClient conn, EditPlayerUsernameMsg msg) {
             Debug.Log("OnServerEditPlayerUsername");
-            // TODO: Implement
+
+            if (!lobby.ContainsKey(conn)) {
+                Debug.Log("EditPlayerUsername: not in lobby" + conn);
+                ServerSendError(conn, "EditPlayerUsername: not in lobby", true);
+                return;
+            }
+            
+            // Validate username
+            if (!IsAllowedUsername(msg.username)) {
+                ServerSendError(conn, "invalid username", false);
+                return;
+            }
+            
+            // Grab player info
+            string playerId = lobby[conn];
+            PlayerInfo playerInfo = players[playerId];
+            
+            // Set username
+            playerInfo.username = msg.username;
         }
         
         void OnServerSelectPlayerCharacter(NetworkConnectionToClient conn, SelectPlayerCharacterMsg msg) {
             Debug.Log("OnServerSelectPlayerCharacter");
+            
+            if (!lobby.ContainsKey(conn)) {
+                Debug.Log("SelectPlayerCharacter: not in lobby" + conn);
+                ServerSendError(conn, "SelectPlayerCharacter: not in lobby", true);
+                return;
+            }
+            
             // TODO: Implement
         }
         
         void OnServerPlayerReady(NetworkConnectionToClient conn, PlayerReadyMsg msg) {
             Debug.Log("OnServerPlayerReady");
+            
+            if (!lobby.ContainsKey(conn)) {
+                Debug.Log("PlayerReady: not in lobby" + conn);
+                ServerSendError(conn, "PlayerReady: not in lobby", true);
+                return;
+            }
+            
+            // Check if we have enough players
+            if (players.Count < 2) {
+                ServerSendError(conn, "not enough players", false);
+                return;
+            }
+            
             // TODO: Implement
         }
 
