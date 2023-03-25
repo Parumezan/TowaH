@@ -126,7 +126,6 @@ namespace TowaH {
             Debug.Log("OnStartServer");
             
             // Setup handlers
-            NetworkServer.RegisterHandler<EditPlayerUsernameMsg>(OnServerEditPlayerUsername);
             NetworkServer.RegisterHandler<SelectPlayerCharacterMsg>(OnServerSelectPlayerCharacter);
             NetworkServer.RegisterHandler<PlayerReadyMsg>(OnServerPlayerReady);
             
@@ -153,7 +152,7 @@ namespace TowaH {
             // Create player info
             var playerInfo = new PlayerInfo {
                 id = playerId,
-                username = "Player " + players.Count
+                username = "Player " + lobby.Count
             };
             players[playerId] = playerInfo;
             
@@ -191,29 +190,6 @@ namespace TowaH {
             // Not too long?
             // Only contains letters, number and underscore and not empty (+)?
             return username.Length <= playerUsernameMaxLength && Regex.IsMatch(username, @"^[a-zA-Z0-9_]+$");
-        }
-        
-        private void OnServerEditPlayerUsername(NetworkConnectionToClient conn, EditPlayerUsernameMsg msg) {
-            Debug.Log("OnServerEditPlayerUsername");
-
-            if (!lobby.ContainsKey(conn)) {
-                Debug.Log("EditPlayerUsername: not in lobby" + conn);
-                ServerSendError(conn, "EditPlayerUsername: not in lobby", true);
-                return;
-            }
-            
-            // Validate username
-            if (!IsAllowedUsername(msg.username)) {
-                ServerSendError(conn, "invalid username", false);
-                return;
-            }
-            
-            // Grab player info
-            string playerId = lobby[conn];
-            PlayerInfo playerInfo = players[playerId];
-            
-            // Set username
-            playerInfo.username = msg.username;
         }
 
         private void OnServerSelectPlayerCharacter(NetworkConnectionToClient conn, SelectPlayerCharacterMsg msg) {

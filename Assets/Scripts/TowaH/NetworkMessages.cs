@@ -22,10 +22,6 @@ namespace TowaH {
         public string version;
     }
 
-    public partial struct EditPlayerUsernameMsg : NetworkMessage {
-        public string username;
-    }
-    
     public partial struct SelectPlayerCharacterMsg : NetworkMessage {
         public int index;
     }

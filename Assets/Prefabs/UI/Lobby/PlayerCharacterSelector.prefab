@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8279408189111309923}
   - component: {fileID: 8279408189111309949}
   - component: {fileID: 8279408189111309922}
-  - component: {fileID: 943757113244371863}
+  - component: {fileID: 6046757388253972548}
   m_Layer: 5
   m_Name: PlayerCharacterSelector
   m_TagString: Untagged
@@ -80,7 +80,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &943757113244371863
+--- !u!114 &6046757388253972548
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -89,11 +89,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 8279408189111309920}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee9021a69520a334c8862e2e5c49253d, type: 3}
+  m_Script: {fileID: 11500000, guid: 6457befa040268d45bb2ef9b5055027f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftButton: {fileID: 8279408189301805390}
-  rightButton: {fileID: 8279408190074129494}
+  leftSelectorButton: {fileID: 8279408189301805390}
+  rightSelectorButton: {fileID: 8279408190074129494}
   characterImage: {fileID: 8279408190062158263}
 --- !u!1 &8279408189301805388
 GameObject:
@@ -113,7 +113,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8279408189301805391
 RectTransform:
   m_ObjectHideFlags: 0
@@ -389,7 +389,7 @@ GameObject:
   - component: {fileID: 8279408190062158262}
   - component: {fileID: 8279408190062158263}
   m_Layer: 5
-  m_Name: CharacterSprite
+  m_Name: SpriteCharacter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -471,7 +471,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8279408190074129495
 RectTransform:
   m_ObjectHideFlags: 0
