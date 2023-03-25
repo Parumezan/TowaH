@@ -1,3 +1,5 @@
+using System;
+using Mirror;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,13 +16,17 @@ namespace TowaH.UI {
             Debug.Assert(panel != null, "Panel is null");
             Debug.Assert(characterDescriptionText != null, "Character description text is null");
         }
-        
+
+        private void Update() {
+            panel.SetActive(networkManager.state == NetworkState.Lobby);
+        }
+
         public void OnDisconnectButton() {
-            // TODO: Implement
+            NetworkClient.Disconnect();
         }
 
         public void OnReadyButton() {
-            // TODO: Implement
+            Debug.Log("OnReadyButton");
         }
     }
 }

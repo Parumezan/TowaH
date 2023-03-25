@@ -455,13 +455,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 515492824}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 902f860467549e04ca5068a0ddcbfa79, type: 3}
+  m_Script: {fileID: 11500000, guid: 803c011ce841ebc45a3c3f3993941408, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   uiPopup: {fileID: 1202774441}
   networkManager: {fileID: 1845330356}
   panel: {fileID: 947943179}
-  characterDescriptionText: {fileID: 0}
+  serverAddressInputField: {fileID: 2083934251}
+  connectButton: {fileID: 1168540995}
+  hostButton: {fileID: 1326766208}
 --- !u!1 &809876615
 GameObject:
   m_ObjectHideFlags: 0

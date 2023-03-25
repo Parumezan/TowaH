@@ -49,6 +49,10 @@ namespace TowaH {
         
         public override void OnStopClient() {
             Debug.Log("OnStopClient");
+            
+            // Set state
+            state = NetworkState.Offline;
+            
             onStopClient?.Invoke();
         }
         
