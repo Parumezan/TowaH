@@ -19,6 +19,12 @@ namespace TowaH {
         public override void OnClientAuthenticate() {
             Debug.Log("OnClientAuthenticate");
             
+            // Send LoginMsg
+            var msg = new LoginMsg {
+                version = Application.version
+            };
+            NetworkClient.Send(msg);
+            
             // Set state
             manager.state = NetworkState.Handshake;
         }
