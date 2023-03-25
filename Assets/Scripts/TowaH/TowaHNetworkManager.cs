@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Mirror;
+using TowaH.UI;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -13,6 +14,8 @@ namespace TowaH {
     public class TowaHNetworkManager : NetworkManager {
         [Header("Game Manager")]
         [SerializeField] private TowaHGameManager gameManager;
+        
+        [SerializeField] private UIPopup uiPopup;
         
         [Header("Events")]
         public UnityEvent onStartClient;
@@ -30,6 +33,7 @@ namespace TowaH {
             base.Awake();
             
             Debug.Assert(gameManager != null, "Game manager is null");
+            Debug.Assert(uiPopup != null, "UI Popup is null");
         }
         
         #region Client
@@ -46,12 +50,16 @@ namespace TowaH {
             
             onStartClient?.Invoke();
         }
-        
+
         public override void OnStopClient() {
             Debug.Log("OnStopClient");
+
+            // Set state
+            state = NetworkState.Offline;
+
             onStopClient?.Invoke();
         }
-        
+
         public override void OnClientConnect() {
             Debug.Log("OnClientConnect");
             onClientConnect?.Invoke(NetworkClient.connection);
@@ -61,7 +69,7 @@ namespace TowaH {
             Debug.Log("OnClientDisconnect");
             onClientDisconnect?.Invoke(NetworkClient.connection);
         }
-        
+
         public void ConnectToParty(string address) {
             Debug.Log($"Connecting to party at {address}");
             
@@ -77,10 +85,11 @@ namespace TowaH {
             StartHost();
         }
 
-        void OnClientError(ErrorMsg message) {
+        private void OnClientError(ErrorMsg message) {
             Debug.Log($"Client error: {message.text}");
-
-            // TODO: Show error message in UI
+            
+            // Show error message
+            uiPopup.Show(message.text);
 
             // Disconnect if it was an important network error
             // (this is needed because the login failure message doesn't disconnect
@@ -97,7 +106,7 @@ namespace TowaH {
             }
         }
 
-        void OnClientCharactersAvailable(CharactersAvailableMsg msg) {
+        private void OnClientCharactersAvailable(CharactersAvailableMsg msg) {
             Debug.Log("OnClientCharactersAvailable");
             
             // Set state
@@ -117,7 +126,6 @@ namespace TowaH {
             Debug.Log("OnStartServer");
             
             // Setup handlers
-            NetworkServer.RegisterHandler<EditPlayerUsernameMsg>(OnServerEditPlayerUsername);
             NetworkServer.RegisterHandler<SelectPlayerCharacterMsg>(OnServerSelectPlayerCharacter);
             NetworkServer.RegisterHandler<PlayerReadyMsg>(OnServerPlayerReady);
             
@@ -144,7 +152,7 @@ namespace TowaH {
             // Create player info
             var playerInfo = new PlayerInfo {
                 id = playerId,
-                username = "Player " + players.Count
+                username = "Player " + lobby.Count
             };
             players[playerId] = playerInfo;
             
@@ -162,7 +170,7 @@ namespace TowaH {
             StartCoroutine(DoServerDisconnect(conn, 0.0f));
         }
         
-        IEnumerator<WaitForSeconds> DoServerDisconnect(NetworkConnectionToClient conn, float delay) {
+        private IEnumerator<WaitForSeconds> DoServerDisconnect(NetworkConnectionToClient conn, float delay) {
             yield return new WaitForSeconds(delay);
             
             onServerDisconnect.Invoke(conn);
@@ -183,31 +191,8 @@ namespace TowaH {
             // Only contains letters, number and underscore and not empty (+)?
             return username.Length <= playerUsernameMaxLength && Regex.IsMatch(username, @"^[a-zA-Z0-9_]+$");
         }
-        
-        void OnServerEditPlayerUsername(NetworkConnectionToClient conn, EditPlayerUsernameMsg msg) {
-            Debug.Log("OnServerEditPlayerUsername");
 
-            if (!lobby.ContainsKey(conn)) {
-                Debug.Log("EditPlayerUsername: not in lobby" + conn);
-                ServerSendError(conn, "EditPlayerUsername: not in lobby", true);
-                return;
-            }
-            
-            // Validate username
-            if (!IsAllowedUsername(msg.username)) {
-                ServerSendError(conn, "invalid username", false);
-                return;
-            }
-            
-            // Grab player info
-            string playerId = lobby[conn];
-            PlayerInfo playerInfo = players[playerId];
-            
-            // Set username
-            playerInfo.username = msg.username;
-        }
-        
-        void OnServerSelectPlayerCharacter(NetworkConnectionToClient conn, SelectPlayerCharacterMsg msg) {
+        private void OnServerSelectPlayerCharacter(NetworkConnectionToClient conn, SelectPlayerCharacterMsg msg) {
             Debug.Log("OnServerSelectPlayerCharacter");
             
             if (!lobby.ContainsKey(conn)) {
@@ -219,7 +204,7 @@ namespace TowaH {
             // TODO: Implement
         }
         
-        void OnServerPlayerReady(NetworkConnectionToClient conn, PlayerReadyMsg msg) {
+        private void OnServerPlayerReady(NetworkConnectionToClient conn, PlayerReadyMsg msg) {
             Debug.Log("OnServerPlayerReady");
             
             if (!lobby.ContainsKey(conn)) {

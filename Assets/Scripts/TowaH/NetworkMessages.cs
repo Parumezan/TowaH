@@ -12,7 +12,6 @@ namespace TowaH {
     }
     
     public partial struct CharactersAvailableMsg : NetworkMessage {
-        // TODO: Implement
     }
     
     #endregion
@@ -23,12 +22,8 @@ namespace TowaH {
         public string version;
     }
 
-    public partial struct EditPlayerUsernameMsg : NetworkMessage {
-        public string username;
-    }
-    
     public partial struct SelectPlayerCharacterMsg : NetworkMessage {
-        public string characterId;
+        public int index;
     }
     
     public partial struct PlayerReadyMsg : NetworkMessage {

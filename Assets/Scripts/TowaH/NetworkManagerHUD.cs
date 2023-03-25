@@ -10,24 +10,26 @@ namespace TowaH {
         [Header("GUI")]
         [SerializeField] private int offsetX = 10;
         [SerializeField] private int offsetY = 10;
+        
+        private string serverAddress = "localhost";
 
         private void Awake() {
             manager = GetComponent<TowaHNetworkManager>();
         }
 
-        void OnGUI() {
+        private void OnGUI() {
             if (manager.state == NetworkState.Offline) {
                 DrawGUI();
             }
         }
 
-        void DrawGUI() {
+        private void DrawGUI() {
             GUILayout.BeginArea(new Rect(10 + offsetX, 40 + offsetY, 215, 300));
             
-            string address = GUILayout.TextField("localhost");
+            serverAddress = GUILayout.TextField(serverAddress);
 
             if (GUILayout.Button("Connect to party")) {
-                manager.ConnectToParty(address);
+                manager.ConnectToParty(serverAddress);
             }
             
             if (GUILayout.Button("Host party")) {

@@ -16,6 +16,6 @@
 .vscode
 .idea
 *.csproj
-*.sln
+*.sln*
 
 ### Project ###
