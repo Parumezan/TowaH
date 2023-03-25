@@ -8,6 +8,8 @@ using UnityEngine.Events;
 namespace TowaH {
     public enum NetworkState { Offline, Handshake, Lobby, Game }
     
+    public enum GameState { Lobby, Game }
+    
     [Serializable] public class UnityEventNetworkConnection : UnityEvent<NetworkConnection> {}
     
     public class TowaHNetworkManager : NetworkManager {
@@ -47,14 +49,17 @@ namespace TowaH {
             
             // Setup handlers
             NetworkClient.RegisterHandler<ErrorMsg>(OnClientError, false);
-            NetworkClient.RegisterHandler<PlayerUpdateCharactersMsg>(OnClientPlayerUpdateCharacters);
-            
+            NetworkClient.RegisterHandler<PlayerCharactersMsg>(OnClientPlayerCharacters);
+            NetworkClient.RegisterHandler<PlayerCharacterAuthorityMsg>(OnClientPlayerCharacterAuthority);
+            NetworkClient.RegisterHandler<SelectPlayerCharacterMsg>(OnClientSelectPlayerCharacter);
+            NetworkClient.RegisterHandler<PlayerJoinedMsg>(OnClientPlayerJoined);
+            NetworkClient.RegisterHandler<PlayerLeftMsg>(OnClientPlayerLeft);
+            NetworkClient.RegisterHandler<StartGameMsg>(OnClientStartGame);
+
             onStartClient?.Invoke();
         }
 
         public override void OnStopClient() {
-            Debug.Log("OnStopClient");
-
             // Set state
             state = NetworkState.Offline;
 
@@ -62,12 +67,10 @@ namespace TowaH {
         }
 
         public override void OnClientConnect() {
-            Debug.Log("OnClientConnect");
             onClientConnect?.Invoke(NetworkClient.connection);
         }
 
         public override void OnClientDisconnect() {
-            Debug.Log("OnClientDisconnect");
             onClientDisconnect?.Invoke(NetworkClient.connection);
         }
 
@@ -107,25 +110,53 @@ namespace TowaH {
             }
         }
 
-        private void OnClientPlayerUpdateCharacters(PlayerUpdateCharactersMsg msg) {
-            Debug.Log("OnClientPlayerUpdateCharacters");
-            
+        private void OnClientPlayerCharacters(PlayerCharactersMsg msg) {
             // Set state
             state = NetworkState.Lobby;
+
+            foreach (PlayerCharactersMsg.CharacterPreview character in msg.characters) {
+                Debug.Log($"Player {character.playerId} selected character {character.characterIndex}");
+                
+                uiLobby.OnJoinPlayer(character.playerId);
+                uiLobby.OnPlayerCharacterSelected(character.playerId, character.characterIndex);   
+            }
+        }
+        
+        private void OnClientPlayerCharacterAuthority(PlayerCharacterAuthorityMsg msg) {
+            uiLobby.OnPlayerCharacterAuthority(msg.playerId);
+        }
+        
+        private void OnClientSelectPlayerCharacter(SelectPlayerCharacterMsg msg) {
+            uiLobby.OnPlayerCharacterSelected(msg.playerId, msg.characterIndex);
+        }
+        
+        private void OnClientPlayerJoined(PlayerJoinedMsg msg) {
+            uiLobby.OnJoinPlayer(msg.playerId);
+            // Set default character
+            uiLobby.OnPlayerCharacterSelected(msg.playerId, 0);
+        }
+        
+        private void OnClientPlayerLeft(PlayerLeftMsg msg) {
+            uiLobby.OnLeavePlayer(msg.playerId);
+        }
+        
+        private void OnClientStartGame(StartGameMsg msg) {
+            Debug.Log("OnClientStartGame");
+            
+            // Set state
+            state = NetworkState.Game;
         }
 
         #endregion
         
         #region Server
         
-        public NetworkState serverState = NetworkState.Offline;
+        public GameState gameState = GameState.Lobby;
         
         public Dictionary<NetworkConnection, string> lobby = new Dictionary<NetworkConnection, string>();
         public Dictionary<string, PlayerInfo> players = new Dictionary<string, PlayerInfo>();
 
         public override void OnStartServer() {
-            Debug.Log("OnStartServer");
-            
             // Setup handlers
             NetworkServer.RegisterHandler<SelectPlayerCharacterMsg>(OnServerSelectPlayerCharacter);
             NetworkServer.RegisterHandler<PlayerReadyMsg>(OnServerPlayerReady);
@@ -134,21 +165,18 @@ namespace TowaH {
         }
 
         public override void OnStopServer() {
-            Debug.Log("OnStopServer");
             onStopServer?.Invoke();
         }
 
         // Called on the server if a client connects after successful auth
         public override void OnServerConnect(NetworkConnectionToClient conn) {
-            Debug.Log("OnServerConnect");
-            
             // Check if party is full (maxConnections)
             if (lobby.Count >= maxConnections) {
                 ServerSendError(conn, "party is full", true);
                 return;
             }
             
-            if (serverState == NetworkState.Game) {
+            if (gameState != GameState.Lobby) {
                 ServerSendError(conn, "party is already started", true);
                 return;
             }
@@ -158,23 +186,49 @@ namespace TowaH {
             // Create player info
             var playerInfo = new PlayerInfo {
                 uniqueId = playerId,
-                id = lobby.Count,
-                selectedCharacterIndex = 0
+                id = generatePlayerId(),
+                selectedCharacterIndex = 0,
+                isReady = false
             };
             players[playerId] = playerInfo;
             
             conn.Send(MakePlayerUpdateCharacters());
             
+            conn.Send(new PlayerCharacterAuthorityMsg {
+                playerId = playerInfo.id
+            });
+            
+            // Send player joined message to all clients
+            var playerJoinedMsg = new PlayerJoinedMsg {
+                playerId = playerInfo.id
+            };
+            foreach (NetworkConnectionToClient c in NetworkServer.connections.Values) {
+                if (c != conn) {
+                    c.Send(playerJoinedMsg);
+                }
+            }
+            
             onServerConnect?.Invoke(conn);
+        }
+
+        private int generatePlayerId() {
+            int id = 0;
+            
+            foreach (PlayerInfo player in players.Values) {
+                if (player.id == id) {
+                    ++id;
+                }
+            }
+            return id;
         }
         
         // TODO: Rework this
-        private PlayerUpdateCharactersMsg MakePlayerUpdateCharacters() {
-            var playerToUpdateCharacters = new PlayerUpdateCharactersMsg.CharacterPreview[players.Count];
+        private PlayerCharactersMsg MakePlayerUpdateCharacters() {
+            var playerToUpdateCharacters = new PlayerCharactersMsg.CharacterPreview[players.Count];
             
             int i = 0;
             foreach (PlayerInfo player in players.Values) {
-                var preview = new PlayerUpdateCharactersMsg.CharacterPreview {
+                var preview = new PlayerCharactersMsg.CharacterPreview {
                     playerId = player.id,
                     characterIndex = player.selectedCharacterIndex
                 };
@@ -182,29 +236,40 @@ namespace TowaH {
                 ++i;
             }
             
-            return new PlayerUpdateCharactersMsg {
+            return new PlayerCharactersMsg {
                 characters = playerToUpdateCharacters
             };
         }
 
         public override void OnServerDisconnect(NetworkConnectionToClient conn) {
-            Debug.Log("OnServerDisconnect");
-            
             StartCoroutine(DoServerDisconnect(conn, 0.0f));
         }
         
         private IEnumerator<WaitForSeconds> DoServerDisconnect(NetworkConnectionToClient conn, float delay) {
             yield return new WaitForSeconds(delay);
             
+            string playerId = lobby[conn];
+            if (players.ContainsKey(playerId)) {
+                var playerJoinedMsg = new PlayerLeftMsg {
+                    playerId = players[playerId].id
+                };
+                foreach (NetworkConnectionToClient c in NetworkServer.connections.Values) {
+                    if (c != conn) {
+                        c.Send(playerJoinedMsg);
+                    }
+                }
+            }
+
             onServerDisconnect.Invoke(conn);
             
-            string playerId = lobby[conn];
             players.Remove(playerId);
             lobby.Remove(conn);
             
-            // Update all clients
-            conn.Send(MakePlayerUpdateCharacters());
-            
+            // End game if only one player left
+            if (gameState == GameState.Game && players.Count <= 1) {
+                ServerEndGame();
+            }
+
             base.OnServerDisconnect(conn);
         }
 
@@ -213,20 +278,37 @@ namespace TowaH {
         }
 
         private void OnServerSelectPlayerCharacter(NetworkConnectionToClient conn, SelectPlayerCharacterMsg msg) {
-            Debug.Log("OnServerSelectPlayerCharacter");
-            
             if (!lobby.ContainsKey(conn)) {
                 Debug.Log("SelectPlayerCharacter: not in lobby" + conn);
                 ServerSendError(conn, "SelectPlayerCharacter: not in lobby", true);
                 return;
             }
             
-            // TODO: Implement
+            if (gameState != GameState.Lobby) {
+                Debug.Log("SelectPlayerCharacter: game already started" + conn);
+                ServerSendError(conn, "SelectPlayerCharacter: game already started", true);
+                return;
+            }
+            
+            string playerId = lobby[conn];
+            PlayerInfo player = players[playerId];
+            
+            // Set character
+            player.selectedCharacterIndex = msg.characterIndex;
+            
+            // Send update to all clients
+            var selectPlayerCharacterMsg = new SelectPlayerCharacterMsg {
+                playerId = player.id,
+                characterIndex = msg.characterIndex
+            };
+            foreach (NetworkConnectionToClient c in NetworkServer.connections.Values) {
+                if (c != conn) {
+                    c.Send(selectPlayerCharacterMsg);
+                }
+            }
         }
         
         private void OnServerPlayerReady(NetworkConnectionToClient conn, PlayerReadyMsg msg) {
-            Debug.Log("OnServerPlayerReady");
-            
             if (!lobby.ContainsKey(conn)) {
                 Debug.Log("PlayerReady: not in lobby" + conn);
                 ServerSendError(conn, "PlayerReady: not in lobby", true);
@@ -239,7 +321,56 @@ namespace TowaH {
                 return;
             }
             
-            // TODO: Implement
+            if (gameState != GameState.Lobby) {
+                Debug.Log("PlayerReady: game already started" + conn);
+                ServerSendError(conn, "PlayerReady: game already started", true);
+                return;
+            }
+            
+            string playerId = lobby[conn];
+            PlayerInfo player = players[playerId];
+            
+            // Set ready
+            player.isReady = true;
+            
+            // Check if all players are ready
+            bool allReady = true;
+            foreach (PlayerInfo p in players.Values) {
+                if (!p.isReady) {
+                    allReady = false;
+                    break;
+                }
+            }
+            
+            if (allReady) {
+                ServerStartGame();
+            }
+        }
+
+        private void ServerStartGame() {
+            Debug.Log("ServerStartGame");
+            
+            // Set state
+            gameState = GameState.Game;
+            
+            // Send start game message to all clients
+            var startGameMsg = new StartGameMsg();
+            foreach (NetworkConnectionToClient c in NetworkServer.connections.Values) {
+                c.Send(startGameMsg);
+            }
+        }
+        
+        private void ServerEndGame() {
+            Debug.Log("ServerEndGame");
+            
+            // Set state
+            gameState = GameState.Lobby;
+            
+            // Send end game message to all clients
+            var endGameMsg = new EndGameMsg();
+            foreach (NetworkConnectionToClient c in NetworkServer.connections.Values) {
+                c.Send(endGameMsg);
+            }
         }
 
         #endregion

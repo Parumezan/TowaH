@@ -3,5 +3,6 @@ namespace TowaH {
         public string uniqueId;
         public int id;
         public int selectedCharacterIndex;
+        public bool isReady;
     }
 }
