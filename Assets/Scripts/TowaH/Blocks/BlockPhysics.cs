@@ -56,9 +56,7 @@ namespace TowaH.Blocks {
         
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            Debug.Log("Velocity before: " + rb.velocity);
-            rb.velocity = new Vector2(rb.velocity.x, 0);
-            Debug.Log("Velocity after: " + rb.velocity);
+            rb.velocity = new Vector2(0, 0);
             if (!isFalling) {
                 return;
             }
