@@ -88,6 +88,19 @@ namespace TowaH {
             
             StartHost();
         }
+        
+        public void LeaveParty() {
+            Debug.Log("Leaving party");
+            
+            NetworkClient.connection.Disconnect();
+            if (NetworkServer.active) {
+                
+                // also stop the host if running as host
+                // (host shouldn't start server but disconnect client for invalid
+                // login, which would be pointless)
+                StopHost();
+            }
+        }
 
         private void OnClientError(ErrorMsg message) {
             Debug.Log($"Client error: {message.text}");

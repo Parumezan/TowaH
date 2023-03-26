@@ -2,8 +2,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace TowaH.Blocks {
-    public class BlocksManager : MonoBehaviour
-    {
+    public class BlocksManager : MonoBehaviour {
         [SerializeField] private GameObject[] blocks;
 
         //TODO: remove spawn, spawn it in server

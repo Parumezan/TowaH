@@ -29,7 +29,7 @@ namespace TowaH.UI {
         }
 
         public void OnDisconnectButton() {
-            NetworkClient.Disconnect();
+            networkManager.LeaveParty();
         }
 
         public void OnReadyButton() {
