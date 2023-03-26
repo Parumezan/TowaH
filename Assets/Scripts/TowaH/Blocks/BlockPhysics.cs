@@ -6,13 +6,11 @@ namespace TowaH.Blocks {
         [SerializeField] private float fallingSpeed = 4f;
         
         private Rigidbody2D rb;
-        private bool isFalling = false;
+        private bool isFalling = true;
 
         private void Awake() {
             rb = gameObject.GetComponent<Rigidbody2D>();
             Debug.Assert(rb != null, "BlockPhysics: Rigidbody2D not found");
-            
-            rb.bodyType = RigidbodyType2D.Static;
         }
     
         private void Update() {
@@ -50,7 +48,6 @@ namespace TowaH.Blocks {
             if (!isFalling) {
                 return;
             }
-            
             StopFalling();
         }
     }
