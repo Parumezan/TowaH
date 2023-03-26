@@ -201,7 +201,8 @@ namespace TowaH {
                 uniqueId = playerId,
                 id = generatePlayerId(),
                 selectedCharacterIndex = 0,
-                isReady = false
+                isReady = false,
+                connection = conn
             };
             players[playerId] = playerInfo;
             

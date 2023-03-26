@@ -6,20 +6,18 @@ namespace TowaH.Blocks {
         [SerializeField] private float fallingSpeed = 4f;
         
         private Rigidbody2D rb;
-        private bool isFalling = true;
-        private BlocksManager bn;
+        private bool isFalling = false;
 
         private void Awake() {
-            bn = GameObject.Find("GameMaster").GetComponent<BlocksManager>();
-            Debug.Assert(bn != null, "BlockPhysics: BlocksManager not found");
-            
             rb = gameObject.GetComponent<Rigidbody2D>();
             Debug.Assert(rb != null, "BlockPhysics: Rigidbody2D not found");
+            
+            rb.bodyType = RigidbodyType2D.Static;
         }
     
         private void Update() {
             // Destroy block if it falls out of the screen
-            if (transform.position.y < -10) {
+            if (transform.position.y < -250) {
                 Destroy(gameObject);
                 return;
             }
@@ -47,15 +45,13 @@ namespace TowaH.Blocks {
             isFalling = false;
             rb.gravityScale = 1; 
         }
-
-        //TODO: remove spawn, spawn it in server
+        
         private void OnCollisionEnter2D(Collision2D collision) {
             if (!isFalling) {
                 return;
             }
             
             StopFalling();
-            bn.SpawnRandomObject();
         }
     }
 }
