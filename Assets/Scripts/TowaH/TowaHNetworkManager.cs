@@ -47,6 +47,11 @@ namespace TowaH {
         public override void OnStartClient() {
             Debug.Log("OnStartClient");
             
+            // Register blocks prefabs
+            foreach (GameObject prefab in gameManager.AvailableBlockPrefabs) {
+                NetworkClient.RegisterPrefab(prefab);
+            }
+            
             // Setup handlers
             NetworkClient.RegisterHandler<ErrorMsg>(OnClientError, false);
             NetworkClient.RegisterHandler<PlayerCharactersMsg>(OnClientPlayerCharacters);

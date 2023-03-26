@@ -13682,7 +13682,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b51c85dc7599fc7449304fd124920949, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dontDestroyOnLoad: 1
+  dontDestroyOnLoad: 0
   runInBackground: 1
   autoStartServerBuild: 1
   autoConnectClientBuild: 0
@@ -13696,12 +13696,7 @@ MonoBehaviour:
   playerPrefab: {fileID: 0}
   autoCreatePlayer: 0
   playerSpawnMethod: 0
-  spawnPrefabs:
-  - {fileID: 1743446155890819917, guid: 83b1245afff59c24e85d0abfc46f42a3, type: 3}
-  - {fileID: 4278600722248797314, guid: f0d6b4ff35219764196a73a6ec0b4a86, type: 3}
-  - {fileID: 9121878974130709118, guid: 7d9384ed9f08dab468ed8f86a874f473, type: 3}
-  - {fileID: 8962430381415927662, guid: c3bd0b1502a1ed74fb534ea52574fceb, type: 3}
-  - {fileID: 7983299428977414957, guid: 10e10d7d7698a8341873b528a05079a3, type: 3}
+  spawnPrefabs: []
   timeInterpolationGui: 0
   gameManager: {fileID: 1367509456}
   uiPopup: {fileID: 1202774441}
