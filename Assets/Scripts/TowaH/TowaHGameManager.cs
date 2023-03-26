@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -36,6 +37,10 @@ namespace TowaH {
         
         public void StartGame() {
             Debug.Log("Starting game");
+            foreach (var player in playerControllers)
+            {
+                player.SpawnRandomBlock();
+            }
         }
     }
 }
