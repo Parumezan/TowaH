@@ -588,7 +588,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 65694895}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 30, y: -224, z: 423}
+  m_LocalPosition: {x: 30, y: -227.28, z: 429}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3739,6 +3739,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2643212325814725809, guid: c6d29014f2e2aec48b69f38198e1fe41, type: 3}
+      propertyPath: id
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2643212325814725809, guid: c6d29014f2e2aec48b69f38198e1fe41, type: 3}
       propertyPath: hasAuthority
       value: 1
       objectReference: {fileID: 0}
@@ -3748,7 +3752,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2643212325814725809, guid: c6d29014f2e2aec48b69f38198e1fe41, type: 3}
       propertyPath: spawnBlockPosition.y
-      value: 18
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 2643212325814725809, guid: c6d29014f2e2aec48b69f38198e1fe41, type: 3}
       propertyPath: spawnBlockRotation.w
@@ -14305,7 +14309,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2643212325814725809, guid: c6d29014f2e2aec48b69f38198e1fe41, type: 3}
       propertyPath: spawnBlockPosition.y
-      value: 18
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 2643212325814725809, guid: c6d29014f2e2aec48b69f38198e1fe41, type: 3}
       propertyPath: spawnBlockRotation.w

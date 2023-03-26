@@ -5,10 +5,9 @@ namespace TowaH {
     public class Player : MonoBehaviour {
         [SerializeField] private Vector3 spawnBlockPosition;
         [SerializeField] private Quaternion spawnBlockRotation;
+        [SerializeField] public int id;
 
         public void SpawnRandomBlock() {
-            Debug.Log("SpawnRandomBlock");
-
             int whichItem = Random.Range(0, TowaHGameManager.instance.AvailableBlockPrefabs.Length);
             GameObject blockPrefab = TowaHGameManager.instance.AvailableBlockPrefabs[whichItem];
 

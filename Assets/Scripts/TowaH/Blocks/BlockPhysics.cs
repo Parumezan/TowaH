@@ -1,9 +1,9 @@
+using System;
 using UnityEngine;
 
 namespace TowaH.Blocks {
     public class BlockPhysics : MonoBehaviour {
-        [SerializeField] private float speed = 5f;
-        [SerializeField] private float fallingSpeed = 1f;
+        [SerializeField] private float speed = 0.05f;
 
         private Rigidbody2D rb;
         private bool isFalling = true;
@@ -15,8 +15,9 @@ namespace TowaH.Blocks {
             Debug.Assert(rb != null, "BlockPhysics: Rigidbody2D not found");
             _startPosition = transform.position;
         }
-    
-        private void Update() {
+        
+        private void FixedUpdate()
+        {
             // Destroy block if it falls out of the screen
             if (transform.position.y < -250) {
                 Destroy(gameObject);
@@ -32,12 +33,14 @@ namespace TowaH.Blocks {
             if (transform.position.x > _startPosition.x + 2)
                 transform.position = new Vector3(_startPosition.x + 2, transform.position.y, transform.position.z);
             
-            float x = Input.GetAxis("Horizontal");
-            if (Input.GetAxis("Vertical") < 0) {
-                rb.velocity = new Vector2(x * speed, -fallingSpeed * 2);
-            } else {
-                rb.velocity = new Vector2(x * speed, -fallingSpeed);
-            }
+            if (_player.id == 0 && Input.GetKey(KeyCode.D))
+                transform.position = new Vector3(transform.position.x + speed, transform.position.y, transform.position.z);
+            if (_player.id == 0 && Input.GetKey(KeyCode.Q))
+                transform.position = new Vector3(transform.position.x - speed, transform.position.y, transform.position.z);
+            if (_player.id == 1 && Input.GetKey(KeyCode.RightArrow))
+                transform.position = new Vector3(transform.position.x + speed, transform.position.y, transform.position.z);
+            if (_player.id == 1 && Input.GetKey(KeyCode.LeftArrow))
+                transform.position = new Vector3(transform.position.x - speed, transform.position.y, transform.position.z);
         }
 
         public void AssignPlayer(Player player)
@@ -51,7 +54,11 @@ namespace TowaH.Blocks {
             _player.SpawnRandomBlock();
         }
         
-        private void OnCollisionEnter2D(Collision2D collision) {
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            Debug.Log("Velocity before: " + rb.velocity);
+            rb.velocity = new Vector2(rb.velocity.x, 0);
+            Debug.Log("Velocity after: " + rb.velocity);
             if (!isFalling) {
                 return;
             }

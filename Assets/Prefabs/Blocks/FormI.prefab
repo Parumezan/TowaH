@@ -178,8 +178,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8428694523161695987}
   - component: {fileID: 8572805987677194375}
-  - component: {fileID: -7708914034254018841}
   - component: {fileID: 7601515859466576604}
+  - component: {fileID: -7708914034254018841}
   m_Layer: 3
   m_Name: FormI
   m_TagString: Untagged
@@ -221,26 +221,12 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0.5
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &-7708914034254018841
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1743446155890819917}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b55b8b7a0f2baa4e81fea03fb1cb96b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 5
-  fallingSpeed: 4
 --- !u!61 &7601515859466576604
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -267,6 +253,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 4}
   m_EdgeRadius: 0
+--- !u!114 &-7708914034254018841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1743446155890819917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b55b8b7a0f2baa4e81fea03fb1cb96b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 0.05
 --- !u!1 &1804646256818567821
 GameObject:
   m_ObjectHideFlags: 0
