@@ -24,15 +24,10 @@ namespace TowaH.UI.Lobby {
             
             rightSelectorButton.onClick.RemoveAllListeners();
             rightSelectorButton.onClick.AddListener(OnRightSelectorButtonClicked);
+            
+            SelectCharacter(0);
         }
-        
-        public void SetAuthority() {
-            leftSelectorButton.gameObject.SetActive(true);
-            rightSelectorButton.gameObject.SetActive(true);
-            leftSelectorButton.interactable = true;
-            rightSelectorButton.interactable = true;
-        }
-        
+
         public void SelectCharacter(int index) {
             characterIndex = index;
             

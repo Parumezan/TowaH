@@ -1,11 +1,11 @@
-using Mirror;
-
 namespace TowaH {
     public class PlayerInfo {
-        public string uniqueId;
-        public int id;
-        public int selectedCharacterIndex;
-        public bool isReady;
-        public NetworkConnection connection;
+        public int Id { get; }
+        public int CharacterIndex { get; set; }
+        
+        public PlayerInfo(int id) {
+            Id = id;
+            CharacterIndex = 0;
+        }
     }
 }

@@ -1,4 +1,3 @@
-using Mirror;
 using UnityEngine;
 
 namespace TowaH {
@@ -33,8 +32,6 @@ namespace TowaH {
             
             GameObject block = Instantiate(blockPrefab, transform.position + spawnBlockPosition, spawnBlockRotation);
             Debug.Log("Spawning block " + block.name + " at " + block.transform.position + " with rotation " + block.transform.rotation);
-
-            NetworkServer.Spawn(block);
         }
     }
 }
