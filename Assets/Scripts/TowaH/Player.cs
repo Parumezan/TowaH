@@ -1,3 +1,4 @@
+using TowaH.Blocks;
 using UnityEngine;
 
 namespace TowaH {
@@ -10,8 +11,9 @@ namespace TowaH {
 
             int whichItem = Random.Range(0, TowaHGameManager.instance.AvailableBlockPrefabs.Length);
             GameObject blockPrefab = TowaHGameManager.instance.AvailableBlockPrefabs[whichItem];
-            
-            Instantiate(blockPrefab, transform.position + spawnBlockPosition, spawnBlockRotation);
+
+            GameObject block = Instantiate(blockPrefab, transform.position + spawnBlockPosition, spawnBlockRotation);
+            block.GetComponent<BlockPhysics>().AssignPlayer(this);
         }
     }
 }
