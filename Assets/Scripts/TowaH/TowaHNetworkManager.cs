@@ -28,8 +28,8 @@ namespace TowaH {
         public UnityEventNetworkConnection onClientDisconnect;
         public UnityEventNetworkConnection onServerConnect;
         public UnityEventNetworkConnection onServerDisconnect;
-        
-        [SerializeField] private int playerUsernameMaxLength = 16;
+        public UnityEvent onServerStartGame;
+        public UnityEvent onServerEndGame;
 
         public override void Awake() {
             base.Awake();
@@ -358,6 +358,8 @@ namespace TowaH {
             foreach (NetworkConnectionToClient c in NetworkServer.connections.Values) {
                 c.Send(startGameMsg);
             }
+            
+            onServerStartGame?.Invoke();
         }
         
         private void ServerEndGame() {
@@ -371,6 +373,8 @@ namespace TowaH {
             foreach (NetworkConnectionToClient c in NetworkServer.connections.Values) {
                 c.Send(endGameMsg);
             }
+            
+            onServerEndGame?.Invoke();
         }
 
         #endregion

@@ -8,12 +8,15 @@ namespace TowaH {
         
         public List<CharacterProfile> availableCharacters = new List<CharacterProfile>();
         
+        [SerializeField] private GameObject[] availableBlockPrefabs;
+        
         public TowaHGameManager() {
             instance = this;
         }
 
         private void Awake() {
             Debug.Assert(availableCharacters.Count > 0, "Available characters is empty");
+            Debug.Assert(availableBlockPrefabs.Length > 0, "Available block prefabs is empty");
         }
         
         public static void Quit() {

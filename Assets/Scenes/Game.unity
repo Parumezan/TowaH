@@ -10821,6 +10821,12 @@ MonoBehaviour:
   availableCharacters:
   - {fileID: 11400000, guid: 77e6597d521d6444cb79a66e4323a281, type: 2}
   - {fileID: 11400000, guid: 0a4db4ca309346c47906b1aebf2026c4, type: 2}
+  availableBlockPrefabs:
+  - {fileID: 1743446155890819917, guid: 83b1245afff59c24e85d0abfc46f42a3, type: 3}
+  - {fileID: 4278600722248797314, guid: f0d6b4ff35219764196a73a6ec0b4a86, type: 3}
+  - {fileID: 9121878974130709118, guid: 7d9384ed9f08dab468ed8f86a874f473, type: 3}
+  - {fileID: 8962430381415927662, guid: c3bd0b1502a1ed74fb534ea52574fceb, type: 3}
+  - {fileID: 7983299428977414957, guid: 10e10d7d7698a8341873b528a05079a3, type: 3}
 --- !u!1 &1375863525
 GameObject:
   m_ObjectHideFlags: 0
@@ -14165,7 +14171,12 @@ MonoBehaviour:
   onServerDisconnect:
     m_PersistentCalls:
       m_Calls: []
-  playerUsernameMaxLength: 16
+  onServerStartGame:
+    m_PersistentCalls:
+      m_Calls: []
+  onServerEndGame:
+    m_PersistentCalls:
+      m_Calls: []
   state: 0
   gameState: 0
 --- !u!4 &1845330357
