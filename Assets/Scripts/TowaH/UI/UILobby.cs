@@ -15,6 +15,18 @@ namespace TowaH.UI {
             Debug.Assert(panel != null, "Panel is null");
             Debug.Assert(characterDescriptionText != null, "Character description text is null");
         }
+        
+        private void Start() {
+            characterSelectors[0].onCharacterSelected.RemoveAllListeners();
+            characterSelectors[0].onCharacterSelected.AddListener(characterIndex => {
+                TowaHGameManager.instance.players[0].CharacterIndex = characterIndex;
+            });
+            
+            characterSelectors[1].onCharacterSelected.RemoveAllListeners();
+            characterSelectors[1].onCharacterSelected.AddListener(characterIndex => {
+                TowaHGameManager.instance.players[1].CharacterIndex = characterIndex;
+            });
+        }
 
         public void OnBackButton() {
             mainMenu.Show();
@@ -26,14 +38,6 @@ namespace TowaH.UI {
             TowaHGameManager.instance.StartGame();
         }
 
-        public void OnPlayerCharacterSelected(int index, int characterIndex) {
-            characterSelectors[index].SelectCharacter(characterIndex);
-        }
-        
-        public void OnPlayerCharacterAuthority(int index) {
-       
-        }
-        
         public void Show() {
             panel.SetActive(true);
         }
