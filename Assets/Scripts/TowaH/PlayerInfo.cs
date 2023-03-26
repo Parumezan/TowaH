@@ -1,6 +1,11 @@
 namespace TowaH {
     public class PlayerInfo {
-        public string id;
-        public string username;
+        public int Id { get; }
+        public int CharacterIndex { get; set; }
+        
+        public PlayerInfo(int id) {
+            Id = id;
+            CharacterIndex = 0;
+        }
     }
 }
