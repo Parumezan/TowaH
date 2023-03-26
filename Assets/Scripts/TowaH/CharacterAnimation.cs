@@ -6,17 +6,19 @@ namespace TowaH {
         private const float Radius = 0.15f;
         
         private float _angle = 0f;
-        private Vector2 _offset;
-        private Vector2 _center;
+        private Vector3 _offset;
+        private Vector3 _center;
 
-        private void Awake() {
+        private void Awake()
+        {
             _center = transform.position;
         }
     
         void Update() {
             _angle += RotateSpeed * Time.deltaTime;
             _offset = new Vector2(Mathf.Sin(_angle), Mathf.Cos(_angle)) * Radius;
-            transform.position = _center + _offset;
+            gameObject.transform.position = _center + _offset;
+            transform.position = new Vector3(transform.position.x, transform.position.y,  _center.z);
         }
     }
 }
