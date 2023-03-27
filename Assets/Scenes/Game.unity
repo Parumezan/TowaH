@@ -10042,6 +10042,7 @@ MonoBehaviour:
   availableCharacters:
   - {fileID: 11400000, guid: 77e6597d521d6444cb79a66e4323a281, type: 2}
   - {fileID: 11400000, guid: 0a4db4ca309346c47906b1aebf2026c4, type: 2}
+  - {fileID: 11400000, guid: 015b9f3646d95c84bae653a3e81229c7, type: 2}
   availableBlockPrefabs:
   - {fileID: 1743446155890819917, guid: 83b1245afff59c24e85d0abfc46f42a3, type: 3}
   - {fileID: 4278600722248797314, guid: f0d6b4ff35219764196a73a6ec0b4a86, type: 3}
