@@ -6,9 +6,9 @@ namespace TowaH.Blocks {
         [SerializeField] private float speed = 0.05f;
 
         private Rigidbody2D rb;
-        private bool isFalling = true;
+        public bool isFalling = true;
         private Vector3 _startPosition;
-        private Player _player;
+        public Player _player;
         private float _timer = 1f;
 
         private void Awake() {

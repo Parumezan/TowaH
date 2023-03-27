@@ -266,7 +266,7 @@ GameObject:
   - component: {fileID: 2515688101529154012}
   m_Layer: 3
   m_Name: FormT
-  m_TagString: Untagged
+  m_TagString: Block
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

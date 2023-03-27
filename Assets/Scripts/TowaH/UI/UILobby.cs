@@ -20,11 +20,13 @@ namespace TowaH.UI {
             characterSelectors[0].onCharacterSelected.RemoveAllListeners();
             characterSelectors[0].onCharacterSelected.AddListener(characterIndex => {
                 TowaHGameManager.instance.players[0].CharacterIndex = characterIndex;
+                TowaHGameManager.instance.playerSprites[0].sprite = TowaHGameManager.instance.availableCharacters[characterIndex].image;
             });
             
             characterSelectors[1].onCharacterSelected.RemoveAllListeners();
             characterSelectors[1].onCharacterSelected.AddListener(characterIndex => {
                 TowaHGameManager.instance.players[1].CharacterIndex = characterIndex;
+                TowaHGameManager.instance.playerSprites[1].sprite = TowaHGameManager.instance.availableCharacters[characterIndex].image;
             });
         }
 
